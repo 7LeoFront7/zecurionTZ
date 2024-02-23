@@ -20,14 +20,14 @@ function addNewInput(e) {
 	}
 
 	if (e.target.id === 'tasks') {
-		newItemInForm.data = formInput.value
-		props.forms[0].tasks.push(newItemInForm)
+		newItemInForm.task = formInput.value
+		props.forms[0].data.push(newItemInForm)
 	} else if (e.target.id === 'dates') {
-		newItemInForm.data = formInput.value
-		props.forms[1].dates.push(newItemInForm)
+		newItemInForm.date = formInput.value
+		props.forms[1].data.push(newItemInForm)
 	} else if (e.target.id === 'statuses') {
-		newItemInForm.data = formInput.value
-		props.forms[2].statuses.push(newItemInForm)
+		newItemInForm.status = formInput.value
+		props.forms[2].data.push(newItemInForm)
 	}
 	formInput.value = ''
 }
