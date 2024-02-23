@@ -9,7 +9,9 @@ const props = defineProps({
 	placeholder: String,
 	id: String,
 	nameForm: String,
-	forms: Array
+	forms: Array,
+	addFullTask: Function,
+	allTasks: Array
 })
 
 function addNewInput(e) {
@@ -29,7 +31,9 @@ function addNewInput(e) {
 		newItemInForm.status = formInput.value
 		props.forms[2].data.push(newItemInForm)
 	}
+
 	formInput.value = ''
+
 }
 
 
