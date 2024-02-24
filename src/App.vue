@@ -1,64 +1,17 @@
 <script setup>
-import { v4 as uuidv4 } from 'uuid'
-import { provide, ref } from 'vue'
+import axios from 'axios'
+import { onMounted, provide, ref } from 'vue'
 import HeaderMenu from './components/HeaderMenu.vue'
 
-const forms = ref([
-  {
-    id: 1,
-    nameForm: 'tasks',
-    placeholer: 'Введите задачу',
-    data: [
-      {
-        id: uuidv4().slice(0, 6),
-        task: 'Помыть пол'
-      },
-      {
-        id: uuidv4().slice(0, 6),
-        task: 'Купить хлеб'
-      },
-      {
-        id: uuidv4().slice(0, 6),
-        task: 'Сделать сайт'
-      }
-    ]
-  },
-  {
-    id: 2,
-    nameForm: 'dates',
-    placeholer: 'Введите дату',
-    data: [
-      {
-        id: uuidv4().slice(0, 6),
-        date: '12.01'
-      },
-      {
-        id: uuidv4().slice(0, 6),
-        date: '05.04'
-      },
-      {
-        id: uuidv4().slice(0, 6),
-        date: '06.12'
-      }
-    ]
-  },
-  {
-    id: 3,
-    nameForm: 'statuses',
-    placeholer: 'Введите статус',
-    data: [
-      {
-        id: uuidv4().slice(0, 6),
-        status: 'В работе'
-      },
-      {
-        id: uuidv4().slice(0, 6),
-        status: 'Выполнено'
-      }
-    ]
-  }
+const forms = ref([])
 
-])
+async function getForms(){
+  const {data} = await axios.get('https://2aaa3219f3d77ced.mokky.dev/forms')
+  
+  if (data){
+    forms.value = data
+  }
+}
 
 function deleteItem(e) {
   forms.value.map((item, index) => {
@@ -76,6 +29,9 @@ function deleteItem(e) {
 
 provide('funcDelete', deleteItem)
 
+onMounted(()=>{
+  getForms()
+})
 
 
 </script>

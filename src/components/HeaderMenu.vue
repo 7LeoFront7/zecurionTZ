@@ -14,7 +14,7 @@ function addFullTask() {
   props.forms.map((items) => {
     if (items.nameForm === 'tasks') {
       items.data.map((item) => {
-        console.log(item)
+       
         const newTask = {
           id: uuidv4().slice(0, 6),
           status: 'Выполнено',
@@ -25,7 +25,6 @@ function addFullTask() {
     }
   })
 
-  console.log(allTasks.value)
 }
 
 addFullTask()

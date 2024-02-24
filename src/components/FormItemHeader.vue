@@ -1,4 +1,5 @@
 <script setup>
+import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import { inject, ref } from 'vue'
 const formInput = ref('')
@@ -14,22 +15,42 @@ const props = defineProps({
 	allTasks: Array
 })
 
+async function postNewForms(info){
+	if (info === 'tasks'){
+		await axios.patch(`https://2aaa3219f3d77ced.mokky.dev/forms/1`,{
+		data: props.forms[0].data
+	})
+	} else if (info === 'dates'){
+		await axios.patch(`https://2aaa3219f3d77ced.mokky.dev/forms/2`,{
+		data: props.forms[1].data
+	})
+	} else if (info === 'statuses'){
+		await axios.patch(`https://2aaa3219f3d77ced.mokky.dev/forms/3`,{
+		data: props.forms[2].data
+	})
+	}
+}
+
+
 function addNewInput(e) {
 	e.preventDefault()
-
+	const id = uuidv4().slice(0, 6)
 	const newItemInForm = {
-		id: uuidv4().slice(0, 6)
+		id: id
 	}
 
 	if (e.target.id === 'tasks') {
 		newItemInForm.task = formInput.value
 		props.forms[0].data.push(newItemInForm)
+		postNewForms(e.target.id)
 	} else if (e.target.id === 'dates') {
 		newItemInForm.date = formInput.value
 		props.forms[1].data.push(newItemInForm)
+		postNewForms(e.target.id)
 	} else if (e.target.id === 'statuses') {
 		newItemInForm.status = formInput.value
 		props.forms[2].data.push(newItemInForm)
+		postNewForms(e.target.id)
 	}
 
 	formInput.value = ''
