@@ -13,18 +13,31 @@ async function getForms(){
   }
 }
 
-function deleteItem(e) {
+async function deleteItemBD(indexItem){
+  
+  await axios.patch(`https://2aaa3219f3d77ced.mokky.dev/forms/${indexItem+1}`,{
+		data: forms.value[indexItem].data
+	})
+  
+}
+
+async function deleteItem(e) {
+
   forms.value.map((item, index) => {
     let indexItem = index
 
     item.data.map((elem, index) => {
       if (elem.id === e.target.id) {
-
         forms.value[indexItem].data.splice(index, 1)
+         deleteItemBD(indexItem)
 
       }
     })
   })
+
+	
+		
+	
 }
 
 provide('funcDelete', deleteItem)
