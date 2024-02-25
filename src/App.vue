@@ -4,81 +4,53 @@ import { onMounted, provide, ref } from 'vue'
 import HeaderMenu from './components/HeaderMenu.vue'
 import TableMain from './components/TableMain.vue'
 
-const forms = ref([])
+const tasks = ref([])
+const dates = ref([])
+const statuses = ref([])
 
 
-async function getForms(){
+async function getTasks() { // Получаем все задачи
   try {
-    const {data} = await axios.get('https://2aaa3219f3d77ced.mokky.dev/forms')
-  
-  if (data){
-    forms.value = data
-  }
-  } catch (err){
+    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/tasks')
+    if (data) {
+      tasks.value = data
+    }
+  } catch (err) {
     console.log(err)
   }
-  
 }
 
-async function deleteItemBD(indexItem){
+async function getDates() { // Получаем все даты
   try {
-    await axios.patch(`https://2aaa3219f3d77ced.mokky.dev/forms/${indexItem+1}`,{
-		data: forms.value[indexItem].data
-	})
-  } catch (err){
+    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/dates')
+    if (data) {
+      dates.value = data
+    }
+  } catch (err) {
     console.log(err)
   }
-  
-  
 }
 
-function deleteItem(e) {
-
-  forms.value.map((item, index) => {
-    let indexItem = index
-
-    item.data.map((elem, index) => {
-      if (elem.id === e.target.id) {
-        forms.value[indexItem].data.splice(index, 1)
-         deleteItemBD(indexItem)
-
-      }
-    })
-  })
-}
-
-
-
-provide('funcDelete', deleteItem)
-
-onMounted(()=>{
-  getForms()
-  getFullTask()
-})
-
-const table = ref([])
-
-function getFullTask() {
-  getForms()
-forms.value.map((items) => {
-  if (items.nameForm === 'tasks') {
-    items.data.map((item) => {
-     
-      const newTask = {
-        id: item.id,
-        status: null,
-        task: item.task
-      }
-      table.value.push(newTask)
-    })
+async function getStatuses() { // Получаем все статусы
+  try {
+    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/statuses')
+    if (data) {
+      statuses.value = data
+    }
+  } catch (err) {
+    console.log(err)
   }
-})
-
 }
 
 
 
+onMounted(() => {
+  getTasks()
+  getDates()
+  getStatuses()
+})
 
+provide('tasks', tasks)
 
 
 
@@ -86,8 +58,8 @@ forms.value.map((items) => {
 
 <template>
   <div class="wrapper w-11/12 mx-auto">
-    <HeaderMenu class="mb-8" :forms='forms' />
-    <TableMain :table='table'/>
+    <HeaderMenu class="mb-8" :tasks='tasks' :dates='dates' :statuses='statuses' />
+    <TableMain :tasks='tasks' />
   </div>
 </template>
 

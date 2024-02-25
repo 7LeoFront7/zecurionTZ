@@ -1,51 +1,75 @@
 <script setup>
-import { v4 as uuidv4 } from 'uuid'
-import { ref } from 'vue'
+import axios from 'axios'
 import FormItemHeader from './FormItemHeader.vue'
+
 const props = defineProps({
-  forms: Array
+  tasks: Array,
+  statuses: Array,
+  dates: Array
 })
 
-const allTasks = ref([])
 
+async function deleteTask(e) { // удаление задачи
+  const id = e.target.id
 
-function addFullTask() {
+  let isDeleteId = -1
+  try {
 
-  props.forms.map((items) => {
-    if (items.nameForm === 'tasks') {
-      items.data.map((item) => {
-       
-        const newTask = {
-          id: uuidv4().slice(0, 6),
-          status: 'Выполнено',
-          task: item.task
-        }
-        allTasks.value.push(newTask)
-      })
+    props.tasks.map((task, index) => {
+      if (task.id == id) {
+
+        isDeleteId = index
+
+      }
+    })
+
+    if (isDeleteId >= 0) {
+      props.tasks.splice(isDeleteId, 1)
     }
-  })
 
+    await axios.delete(`https://cf2bd04fe3eff35b.mokky.dev/tasks/${id}`)
+
+
+  } catch (err) {
+    console.log(err)
+  }
 }
-
-addFullTask()
-
 
 </script>
 
 <template>
   <header class="flex gap-6 mt-6">
-    <div v-for='form of props.forms ' :key="form.id">
-      <FormItemHeader :placeholder="form.placeholer" :nameForm='form.nameForm' :forms='forms' :addFullTask='addFullTask'
-        :allTasks='allTasks' />
+    <div>
+      <FormItemHeader placeholder="Введите задачу ..." />
+      <ul class="max-w-md">
+        <li v-for="item of props.tasks" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
+          <span class=" text-slate-400">id: {{ item.id }}</span>
+          <p>{{ item.task }}</p>
+          <button :id="item.id" class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800"
+            @click="deleteTask">Удалить</button>
+        </li>
+      </ul>
     </div>
-    <ul class="max-w-md">
-      <li v-for="item of allTasks" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
-        <span class=" text-slate-400">id: {{ item.id }}</span>
-        <p>{{ item.task }} {{ item.status }} {{ item.date }}</p>
-        <button class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
-      </li>
-
-    </ul>
+    <div>
+      <FormItemHeader placeholder="Введите дату ..." />
+      <ul class="max-w-md">
+        <li v-for="item of props.dates" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
+          <span class=" text-slate-400">id: {{ item.idDate }}</span>
+          <p>{{ item.date }}</p>
+          <button class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <FormItemHeader placeholder="Введите статус ..." />
+      <ul class="max-w-md">
+        <li v-for="item of props.statuses" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
+          <span class=" text-slate-400">id: {{ item.idStatus }}</span>
+          <p>{{ item.status }}</p>
+          <button class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+        </li>
+      </ul>
+    </div>
   </header>
 </template>
 
