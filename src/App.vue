@@ -7,6 +7,7 @@ import TableMain from './components/TableMain.vue'
 const tasks = ref([])
 const dates = ref([])
 const statuses = ref([])
+const fullTasks = ref([])
 
 
 async function getTasks() { // Получаем все задачи
@@ -50,7 +51,17 @@ onMounted(() => {
   getStatuses()
 })
 
+// fullTask.value = [{
+//   id: 221,
+//   task: 'Task1',
+//   date: '21.02.2024',
+//   status: 'Work'
+// }]
+
 provide('tasks', tasks)
+provide('dates', dates)
+provide('statuses', statuses)
+provide('fullTasks', fullTasks)
 
 
 
@@ -59,7 +70,7 @@ provide('tasks', tasks)
 <template>
   <div class="wrapper w-11/12 mx-auto">
     <HeaderMenu class="mb-8" :tasks='tasks' :dates='dates' :statuses='statuses' />
-    <TableMain :tasks='tasks' />
+    <TableMain :tasks='tasks' :dates='dates' :statuses='statuses' />
   </div>
 </template>
 

@@ -35,12 +35,62 @@ async function deleteTask(e) { // удаление задачи
   }
 }
 
+async function deleteDate(e) { // удаление даты
+  const id = e.target.id
+
+  let isDeleteId = -1
+  try {
+
+    props.dates.map((date, index) => {
+      if (date.id == id) {
+
+        isDeleteId = index
+
+      }
+    })
+
+    if (isDeleteId >= 0) {
+      props.dates.splice(isDeleteId, 1)
+    }
+    await axios.delete(`https://cf2bd04fe3eff35b.mokky.dev/dates/${id}`)
+
+
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+async function deleteStatus(e) { // удаление даты
+  const id = e.target.id
+
+  let isDeleteId = -1
+  try {
+
+    props.statuses.map((status, index) => {
+      if (status.id == id) {
+
+        isDeleteId = index
+
+      }
+    })
+
+    if (isDeleteId >= 0) {
+      props.statuses.splice(isDeleteId, 1)
+    }
+    await axios.delete(`https://cf2bd04fe3eff35b.mokky.dev/statuses/${id}`)
+
+
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 </script>
 
 <template>
   <header class="flex gap-6 mt-6">
     <div>
-      <FormItemHeader placeholder="Введите задачу ..." />
+      <FormItemHeader idForm='tasksForm' placeholder="Введите задачу ..." />
       <ul class="max-w-md">
         <li v-for="item of props.tasks" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
           <span class=" text-slate-400">id: {{ item.id }}</span>
@@ -51,22 +101,26 @@ async function deleteTask(e) { // удаление задачи
       </ul>
     </div>
     <div>
-      <FormItemHeader placeholder="Введите дату ..." />
+      <FormItemHeader idForm='datesForm' placeholder="Введите дату ..." />
       <ul class="max-w-md">
-        <li v-for="item of props.dates" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
-          <span class=" text-slate-400">id: {{ item.idDate }}</span>
-          <p>{{ item.date }}</p>
-          <button class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+        <li v-for="itemDate of props.dates" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
+          <span class=" text-slate-400">id: {{ itemDate.id }}</span>
+          <p>{{ itemDate.date }}</p>
+          <button :id="itemDate.id" @click="deleteDate"
+            class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
         </li>
+
+
       </ul>
     </div>
     <div>
-      <FormItemHeader placeholder="Введите статус ..." />
+      <FormItemHeader idForm='statusForm' placeholder="Введите статус ..." />
       <ul class="max-w-md">
         <li v-for="item of props.statuses" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
-          <span class=" text-slate-400">id: {{ item.idStatus }}</span>
+          <span class=" text-slate-400">id: {{ item.id }}</span>
           <p>{{ item.status }}</p>
-          <button class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+          <button :id="item.id" @click="deleteStatus"
+            class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
         </li>
       </ul>
     </div>
