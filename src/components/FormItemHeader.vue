@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
-import { inject, ref } from 'vue'
+import {provide, inject, ref } from 'vue'
 const formInput = ref('')
 
 const deleteBtn = inject('funcDelete')
@@ -16,7 +16,8 @@ const props = defineProps({
 })
 
 async function postNewForms(info){
-	if (info === 'tasks'){
+	try{
+		if (info === 'tasks'){
 		await axios.patch(`https://2aaa3219f3d77ced.mokky.dev/forms/1`,{
 		data: props.forms[0].data
 	})
@@ -29,6 +30,10 @@ async function postNewForms(info){
 		data: props.forms[2].data
 	})
 	}
+	} catch (err){
+		console.log(err)
+	}
+	
 }
 
 
@@ -58,7 +63,7 @@ function addNewInput(e) {
 }
 
 
-
+provide('formsFrom', props.forms)
 
 
 </script>

@@ -1,0 +1,11 @@
+  <!-- <td class="border border-slate-400 p-2">
+      <span class="flex cursor-pointer justify-center font-bold border hover:bg-blue-600 transition hover:text-white border-blue-600 text-blue-600">+</span>
+        <select name="" id="">
+            <option value="">Выполнено</option>
+            <option value="">В работе</option>
+            <option value="">Неактивная</option>
+        </select>
+      </td>
+      <td class="border border-slate-400 p-2">
+        <span class="flex cursor-pointer justify-center font-bold border hover:bg-blue-600 transition hover:text-white border-blue-600 text-blue-600">+</span>
+      </td> -->
