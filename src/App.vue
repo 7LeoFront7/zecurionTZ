@@ -1,5 +1,4 @@
 <script setup>
-import axios from 'axios'
 import { onMounted, provide, ref } from 'vue'
 import HeaderMenu from './components/HeaderMenu.vue'
 import TableMain from './components/TableMain.vue'
@@ -10,70 +9,55 @@ const statuses = ref([])
 const allTasks = ref([])
 
 
-async function getTasks() { // Получаем все задачи
-  try {
-    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/tasks')
-    if (data) {
-      tasks.value = data
-    }
-  } catch (err) {
-    console.log(err)
+function saveAllTasksOnLocalStorage() {
+  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+}
+
+function getTasksOnLocalStorage() {
+  const data = JSON.parse(localStorage.getItem('allTasks'))
+
+  if (data == []) {
+    allTasks.value = []
+  } else {
+    allTasks.value = data
   }
 }
 
-async function getDates() { // Получаем все даты
-  try {
-    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/dates')
-    if (data) {
-      dates.value = data
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-async function getStatuses() { // Получаем все статусы
-  try {
-    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/statuses')
-    if (data) {
-      statuses.value = data
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-async function getAllTasks() { // Получаем все 
-  try {
-    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/allTasks')
-    if (data) {
-      allTasks.value = data
-    }
-  } catch (err) {
-    console.log(err)
-  }
+function saveDatesOnLocalStorage() {
+  localStorage.setItem('dates', JSON.stringify(dates.value))
 }
 
 
+// saveAllTasksOnLocalStorage()
+// saveDatesOnLocalStorage()
+
+
+function getDatesOnLocalStorage() {
+  const data = JSON.parse(localStorage.getItem('dates'))
+
+  if (data == []) {
+    return dates.value = []
+  } else {
+    return dates.value = data
+  }
+}
 
 onMounted(() => {
-  getTasks()
-  getDates()
-  getStatuses()
-  getAllTasks()
+  getTasksOnLocalStorage()
+  getDatesOnLocalStorage()
 })
-
-// fullTask.value = [{
-//   id: 221,
-//   task: 'Task1',
-//   date: '21.02.2024',
-//   status: 'Work'
-// }]
 
 provide('tasks', tasks)
 provide('dates', dates)
 provide('statuses', statuses)
 provide('allTasks', allTasks)
+
+provide('LocalStorogeFunc', {
+  getTasksOnLocalStorage,
+  saveAllTasksOnLocalStorage,
+  saveDatesOnLocalStorage,
+  getDatesOnLocalStorage
+})
 
 
 

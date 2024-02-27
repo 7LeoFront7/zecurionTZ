@@ -1,8 +1,9 @@
 <script setup>
-import axios from 'axios'
 import { inject, onMounted, ref } from 'vue'
 
 const allTasks = inject('allTasks')
+
+const { getTasksOnLocalStorage, saveAllTasksOnLocalStorage } = inject('LocalStorogeFunc')
 
 const datesTasks = ref([])
 const textTasks = ref([])
@@ -23,6 +24,7 @@ function getTextTasks() {
 
 
 
+
 const props = defineProps({
   tasks: Array,
   dates: Array,
@@ -31,19 +33,14 @@ const props = defineProps({
 
 
 async function changeTask(e) {
-  const text = e.target.value
-  const id = e.target.id
-  await axios.patch(`https://cf2bd04fe3eff35b.mokky.dev/allTasks/${id}`, {
-    task: text
-  })
+
+  saveAllTasksOnLocalStorage()
 }
 
 onMounted(() => {
   getDatesTasks()
   getTextTasks()
 })
-
-console.log(allTasks.value)
 
 </script>
 
@@ -53,11 +50,15 @@ console.log(allTasks.value)
       <tr>
         <th class="w-56 border border-slate-600 p-3">Задачи</th>
 
-        <th v-if='props.dates.length > 0' v-for="dateTask of props.dates" class="w-56 border border-slate-600 p-3">
+        <th v-for="DateItem of allTasks" class="w-56 border border-slate-600 p-3">
+          <div v-for="dateItem of DateItem.dates">
+            <span> {{ dateItem.date }}</span>
+          </div>
 
-          <span> {{ dateTask.date }}</span>
 
         </th>
+
+
       </tr>
     </thead>
     <tbody>
@@ -72,11 +73,10 @@ console.log(allTasks.value)
 
           <div>
 
-            <span v-if="dateItem.status == null">Нет статусов</span>
+            <span v-if="dateItem.status === null">Нет статусов</span>
             <span v-if="dateItem.status !== null">
               <button
-                class=' w-full bg-slate-200 p-3 text-center transition px-5 flex justify-center hover:bg-slate-300'>{{
-                  dateItem.status }}</button>
+                class=' w-full bg-slate-200 p-3 text-center transition px-5 flex justify-center hover:bg-slate-300'>+</button>
             </span>
 
 
