@@ -1,6 +1,9 @@
 <script setup>
 import axios from 'axios'
+import { inject } from 'vue'
 import FormItemHeader from './FormItemHeader.vue'
+
+const allTasks = inject('allTasks')
 
 const props = defineProps({
   tasks: Array,
@@ -15,7 +18,7 @@ async function deleteTask(e) { // удаление задачи
   let isDeleteId = -1
   try {
 
-    props.tasks.map((task, index) => {
+    allTasks.value.map((task, index) => {
       if (task.id == id) {
 
         isDeleteId = index
@@ -24,10 +27,10 @@ async function deleteTask(e) { // удаление задачи
     })
 
     if (isDeleteId >= 0) {
-      props.tasks.splice(isDeleteId, 1)
+      allTasks.value.splice(isDeleteId, 1)
     }
 
-    await axios.delete(`https://cf2bd04fe3eff35b.mokky.dev/tasks/${id}`)
+    await axios.delete(`https://cf2bd04fe3eff35b.mokky.dev/allTasks/${id}`)
 
 
   } catch (err) {
@@ -92,7 +95,7 @@ async function deleteStatus(e) { // удаление даты
     <div>
       <FormItemHeader idForm='tasksForm' placeholder="Введите задачу ..." />
       <ul class="max-w-md">
-        <li v-for="item of props.tasks" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
+        <li v-for="item of allTasks" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
           <span class=" text-slate-400">id: {{ item.id }}</span>
           <p>{{ item.task }}</p>
           <button :id="item.id" class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800"
@@ -124,6 +127,17 @@ async function deleteStatus(e) { // удаление даты
         </li>
       </ul>
     </div>
+    <!-- <ul class="max-w-md">
+      <li v-for="item in allTasks[0]">
+        {{ item }}
+      </li>
+      <li v-for="item of allTasks" class="flex justify-between items-center border gap-6 p-2 my-2 mt-0">
+        <span class=" text-slate-400">id: {{ item.id }}</span>
+        <p>{{ item.task }} | 21.12.2024 | da</p>
+        <button :id="item.id" @click="deleteStatus"
+          class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+      </li>
+    </ul> -->
   </header>
 </template>
 

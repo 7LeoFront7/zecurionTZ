@@ -2,6 +2,8 @@
 import axios from 'axios'
 import { inject, ref } from 'vue'
 
+const allTasks = inject('allTasks')
+
 const formInput = ref('')
 
 const tasks = inject('tasks')
@@ -17,11 +19,26 @@ async function postTask(e) { // Добавлание задачи
 	e.preventDefault()
 	try {
 
-		await axios.post('https://cf2bd04fe3eff35b.mokky.dev/tasks', {
+		await axios.post('https://cf2bd04fe3eff35b.mokky.dev/allTasks', {
 			task: formInput.value,
+			status: null,
+			dates: [
+				{
+					"date": "21.12.2024",
+					"status": "work1"
+				},
+				{
+					"date": "23.12.2024",
+					"status": "work2"
+				},
+				{
+					"date": "24.12.2024",
+					"status": "work3"
+				}
+			]
 		})
 
-		const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/tasks')
+		const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/allTasks')
 		const idTask = data.pop()
 
 		const newTask = {
@@ -29,7 +46,7 @@ async function postTask(e) { // Добавлание задачи
 			id: idTask.id
 		}
 
-		tasks.value.push(newTask)
+		allTasks.value.push(newTask)
 
 	} catch (err) {
 		console.log(err)
@@ -37,6 +54,7 @@ async function postTask(e) { // Добавлание задачи
 		formInput.value = ''
 	}
 }
+
 
 async function chancgedatesOfTask() {
 	const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/tasks')

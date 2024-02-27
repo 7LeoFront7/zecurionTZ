@@ -1,9 +1,27 @@
 <script setup>
 import axios from 'axios'
-import { inject } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 
-const fullTasks = inject('fullTasks')
-console.log(fullTasks.value)
+const allTasks = inject('allTasks')
+
+const datesTasks = ref([])
+const textTasks = ref([])
+
+function getDatesTasks() {
+
+  allTasks.value.map((item) => {
+    datesTasks.value.push(item)
+  })
+}
+
+function getTextTasks() {
+  allTasks.value.map((item) => {
+    textTasks.value.push(item)
+  })
+}
+
+
+
 
 const props = defineProps({
   tasks: Array,
@@ -15,11 +33,17 @@ const props = defineProps({
 async function changeTask(e) {
   const text = e.target.value
   const id = e.target.id
-  await axios.patch(`https://cf2bd04fe3eff35b.mokky.dev/tasks/${id + 1}`, {
+  await axios.patch(`https://cf2bd04fe3eff35b.mokky.dev/allTasks/${id}`, {
     task: text
   })
 }
 
+onMounted(() => {
+  getDatesTasks()
+  getTextTasks()
+})
+
+console.log(allTasks.value)
 
 </script>
 
@@ -37,17 +61,29 @@ async function changeTask(e) {
       </tr>
     </thead>
     <tbody>
-      <tr v-for='item of props.tasks' :key="item.id">
+      <tr v-for='item of allTasks' :key="item.id">
         <td class="border border-slate-400 p-2">
           <input :id='item.id' v-model="item.task"
             class="outline-1 outline-offset-8 hover:bg-blue-100 transition outline-blue-600" type="text"
             @input="changeTask">
         </td>
-        <td v-for="task of props.tasks">
-          <button class=' w-full bg-slate-200 p-3 text-center transition px-5 flex justify-center hover:bg-slate-300'
-            v-if="task.status == null">
-            +</button>
+
+        <td v-for="dateItem of item.dates">
+
+          <div>
+
+            <span v-if="dateItem.status == null">Нет статусов</span>
+            <span v-if="dateItem.status !== null">
+              <button
+                class=' w-full bg-slate-200 p-3 text-center transition px-5 flex justify-center hover:bg-slate-300'>{{
+                  dateItem.status }}</button>
+            </span>
+
+
+
+          </div>
         </td>
+
       </tr>
     </tbody>
   </table>

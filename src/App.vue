@@ -7,7 +7,7 @@ import TableMain from './components/TableMain.vue'
 const tasks = ref([])
 const dates = ref([])
 const statuses = ref([])
-const fullTasks = ref([])
+const allTasks = ref([])
 
 
 async function getTasks() { // Получаем все задачи
@@ -43,12 +43,24 @@ async function getStatuses() { // Получаем все статусы
   }
 }
 
+async function getAllTasks() { // Получаем все 
+  try {
+    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/allTasks')
+    if (data) {
+      allTasks.value = data
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 
 
 onMounted(() => {
   getTasks()
   getDates()
   getStatuses()
+  getAllTasks()
 })
 
 // fullTask.value = [{
@@ -61,7 +73,7 @@ onMounted(() => {
 provide('tasks', tasks)
 provide('dates', dates)
 provide('statuses', statuses)
-provide('fullTasks', fullTasks)
+provide('allTasks', allTasks)
 
 
 
