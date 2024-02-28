@@ -86,3 +86,9 @@
 // await axios.patch(`https://cf2bd04fe3eff35b.mokky.dev/allTasks/${i}`, {
 // 	dates: dates.value,
 // })
+
+// await axios.post('https://cf2bd04fe3eff35b.mokky.dev/statuses', {
+//   status: formInputStatus.value,
+// })
+// const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/statuses')
+// const idStatus = data.pop()

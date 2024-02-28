@@ -1,46 +1,21 @@
 <script setup>
-import { inject, onMounted, ref } from 'vue'
+import { inject } from 'vue'
 
 const allTasks = inject('allTasks')
 
+
 const { getTasksOnLocalStorage, saveAllTasksOnLocalStorage } = inject('LocalStorogeFunc')
-
-const datesTasks = ref([])
-const textTasks = ref([])
-
-function getDatesTasks() {
-
-  allTasks.value.map((item) => {
-    datesTasks.value.push(item)
-  })
-}
-
-function getTextTasks() {
-  allTasks.value.map((item) => {
-    textTasks.value.push(item)
-  })
-}
-
-
-
 
 
 const props = defineProps({
-  tasks: Array,
-  dates: Array,
-  statuses: Array
+  statuses: Array,
+  dates: Array
 })
 
 
-async function changeTask(e) {
-
+function changeTask() {
   saveAllTasksOnLocalStorage()
 }
-
-onMounted(() => {
-  getDatesTasks()
-  getTextTasks()
-})
 
 </script>
 
@@ -50,12 +25,8 @@ onMounted(() => {
       <tr>
         <th class="w-56 border border-slate-600 p-3">Задачи</th>
 
-        <th v-for="DateItem of allTasks" class="w-56 border border-slate-600 p-3">
-          <div v-for="dateItem of DateItem.dates">
-            <span> {{ dateItem.date }}</span>
-          </div>
-
-
+        <th v-for="DateItem of props.dates" class="w-56 border border-slate-600 p-3">
+          <span> {{ DateItem.date }}</span>
         </th>
 
 

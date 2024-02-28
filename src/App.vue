@@ -9,6 +9,21 @@ const statuses = ref([])
 const allTasks = ref([])
 
 
+function saveStatusesOnLocalStorage() {
+  localStorage.setItem('statuses', JSON.stringify(statuses.value))
+}
+
+function getStatusesOnLocalStorage() {
+  const data = JSON.parse(localStorage.getItem('statuses'))
+
+  if (data == []) {
+    statuses.value = []
+  } else {
+    statuses.value = data
+  }
+}
+
+
 function saveAllTasksOnLocalStorage() {
   localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 }
@@ -27,7 +42,6 @@ function saveDatesOnLocalStorage() {
   localStorage.setItem('dates', JSON.stringify(dates.value))
 }
 
-
 // saveAllTasksOnLocalStorage()
 // saveDatesOnLocalStorage()
 
@@ -45,6 +59,7 @@ function getDatesOnLocalStorage() {
 onMounted(() => {
   getTasksOnLocalStorage()
   getDatesOnLocalStorage()
+  getStatusesOnLocalStorage()
 })
 
 provide('tasks', tasks)
@@ -52,11 +67,14 @@ provide('dates', dates)
 provide('statuses', statuses)
 provide('allTasks', allTasks)
 
+
 provide('LocalStorogeFunc', {
   getTasksOnLocalStorage,
   saveAllTasksOnLocalStorage,
   saveDatesOnLocalStorage,
-  getDatesOnLocalStorage
+  getDatesOnLocalStorage,
+  saveStatusesOnLocalStorage,
+  getStatusesOnLocalStorage
 })
 
 
@@ -66,7 +84,7 @@ provide('LocalStorogeFunc', {
 <template>
   <div class="wrapper w-11/12 mx-auto">
     <HeaderMenu class="mb-8" :tasks='tasks' :dates='dates' :statuses='statuses' />
-    <TableMain :tasks='tasks' :dates='dates' :statuses='statuses' />
+    <TableMain :dates='dates' :statuses='statuses' />
   </div>
 </template>
 

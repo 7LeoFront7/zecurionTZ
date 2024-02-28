@@ -3,7 +3,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { inject, ref } from 'vue'
 
-const { saveDatesOnLocalStorage, saveAllTasksOnLocalStorage } = inject('LocalStorogeFunc')
 
 const allTasks = inject('allTasks')
 
@@ -17,6 +16,8 @@ const formInputTask = ref()
 const formInputDate = ref('')
 const formInputStatus = ref('')
 
+
+
 function postTask(e) { // Добавлание задачи
   e.preventDefault()
 
@@ -29,7 +30,7 @@ function postTask(e) { // Добавлание задачи
   }
 
   allTasks.value.push(newTask)
-  saveAllTasksOnLocalStorage()
+  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
 
@@ -37,33 +38,27 @@ function postTask(e) { // Добавлание задачи
 
 }
 
-async function postStatus(e) { // Добавлание статус
+function postStatus(e) { // Добавлание статус
   e.preventDefault()
-  try {
-
-    await axios.post('https://cf2bd04fe3eff35b.mokky.dev/statuses', {
-      status: formInputStatus.value,
-    })
 
 
-    const { data } = await axios.get('https://cf2bd04fe3eff35b.mokky.dev/statuses')
-    const idStatus = data.pop()
 
-    const newStatus = {
-      status: formInputStatus.value,
-      id: idStatus.id
-    }
 
-    statuses.value.push(newStatus)
-
-  } catch (err) {
-    console.log(err)
-  } finally {
-    formInputStatus.value = ''
+  const newStatus = {
+    status: formInputStatus.value,
+    id: uuidv4().slice(0, 6)
   }
+
+  props.statuses.push(newStatus)
+  localStorage.setItem('statuses', JSON.stringify(props.statuses))
+
+
+
+  formInputStatus.value = ''
+
 }
 
-async function deleteTask(e) { // удаление задачи
+function deleteTask(e) { // удаление задачи
   const id = e.target.id
 
   let isDeleteId = -1
@@ -78,7 +73,7 @@ async function deleteTask(e) { // удаление задачи
 
     if (isDeleteId >= 0) {
       allTasks.value.splice(isDeleteId, 1)
-      saveAllTasksOnLocalStorage()
+      localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
     }
 
 
@@ -116,8 +111,11 @@ function deleteDate(e) { // удаление даты
       }
     })
   })
+
+
+
   localStorage.setItem('dates', JSON.stringify(props.dates))
-  saveAllTasksOnLocalStorage()
+  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
 }
@@ -126,14 +124,31 @@ function deleteDate(e) { // удаление даты
 function postDate(e) { // Добавление даты
   e.preventDefault() // Отключаем перезагрузку страницы
 
-  const newDate = {
+
+
+  const newDate = { // Новая дата
     date: formInputDate.value,
     status: null,
     idDate: uuidv4().slice(0, 6)
   }
+
   props.dates.push(newDate)
 
+
+  allTasks.value.map((val) => {
+    val.dates = props.dates
+  })
+
+
+  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
   localStorage.setItem('dates', JSON.stringify(props.dates))
+
+
+
+
+
+
+
   formInputDate.value = ''
 }
 
