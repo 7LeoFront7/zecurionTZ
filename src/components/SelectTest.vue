@@ -5,9 +5,7 @@ const allTasks = inject('allTasks')
 
 const props = defineProps({
 	date: String,
-	task: String,
-	addNewStatusOnTask: Function,
-	idItem: String
+	task: String
 })
 
 const selected = ref(statuses.value[0].status)
@@ -29,12 +27,7 @@ function chancge(e) {
 </script>
 
 <template>
-	<button :id="props.idItem" @click="props.addNewStatusOnTask"
-		class="w-full bg-slate-200 p-2 hover:bg-slate-300 transition">
-		+
-	</button>
-
-	<!-- <select @change="chancge" v-model="selected">
-			<option v-for="status of statuses" :value="status.status">{{ status.status }}</option>
-		</select> -->
+	<select @change="chancge" v-model="selected">
+		<option v-for="status of statuses" :value="status.status">{{ status.status }}</option>
+	</select>
 </template>

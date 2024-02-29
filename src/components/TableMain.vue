@@ -9,6 +9,7 @@ const statuses = inject('statuses')
 
 
 
+
 const { getTasksOnLocalStorage, saveAllTasksOnLocalStorage } = inject('LocalStorogeFunc')
 
 
@@ -26,6 +27,8 @@ const props = defineProps({
 function changeTask() {
   saveAllTasksOnLocalStorage()
 }
+
+
 
 
 function addNewStatusOnTask(task, dateTask) {
@@ -54,6 +57,7 @@ function addNewStatusOnTask(task, dateTask) {
 }
 
 
+
 </script>
 
 <template>
@@ -74,10 +78,17 @@ function addNewStatusOnTask(task, dateTask) {
             class="outline-1 outline-offset-8 hover:bg-blue-100 transition outline-blue-600" type="text"
             @input="changeTask">
         </td>
-        <td class=" relative" v-for="dateItem of item.dates" :key="dateItem.idStatus">
+        <td class=" relative" v-for="dateItem of item.dates" :key="item.id">
           <span v-if="statusTasks == false">Нет статусов</span>
-          <SelectTest v-else :addNewStatusOnTask='addNewStatusOnTask' :idItem='dateItem.idStatus' :date='dateItem.date'
-            :task='item.task' :statuses='dateItem.status' />
+
+          <button v-if="statusTasks != false && dateItem.isStatus == false"
+            @click="addNewStatusOnTask(item.idTask, dateItem.date)"
+            class="w-full bg-slate-200 p-2 hover:bg-slate-300 transition">
+            +
+          </button>
+
+          <SelectTest v-if="dateItem.isStatus == true" :date='dateItem.date' :task='item.task'
+            :statuses='dateItem.status' />
         </td>
 
       </tr>
