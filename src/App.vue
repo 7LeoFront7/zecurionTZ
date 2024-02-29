@@ -7,7 +7,20 @@ const tasks = ref([])
 const dates = ref([])
 const statuses = ref([])
 const allTasks = ref([])
+const statusTasks = ref(false)
 
+
+
+
+function saveStatusesTasksOnLocalStorage() {
+  localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
+}
+
+function getStatusesTasksOnLocalStorage() {
+  const data = JSON.parse(localStorage.getItem('statusTasks'))
+
+  statusTasks.value = data
+}
 
 function saveStatusesOnLocalStorage() {
   localStorage.setItem('statuses', JSON.stringify(statuses.value))
@@ -41,7 +54,7 @@ function getTasksOnLocalStorage() {
 function saveDatesOnLocalStorage() {
   localStorage.setItem('dates', JSON.stringify(dates.value))
 }
-
+// saveStatusesOnLocalStorage()
 // saveAllTasksOnLocalStorage()
 // saveDatesOnLocalStorage()
 
@@ -60,13 +73,14 @@ onMounted(() => {
   getTasksOnLocalStorage()
   getDatesOnLocalStorage()
   getStatusesOnLocalStorage()
+  getStatusesTasksOnLocalStorage()
 })
 
 provide('tasks', tasks)
 provide('dates', dates)
 provide('statuses', statuses)
 provide('allTasks', allTasks)
-
+provide('statusTasks', statusTasks)
 
 provide('LocalStorogeFunc', {
   getTasksOnLocalStorage,
@@ -74,7 +88,9 @@ provide('LocalStorogeFunc', {
   saveDatesOnLocalStorage,
   getDatesOnLocalStorage,
   saveStatusesOnLocalStorage,
-  getStatusesOnLocalStorage
+  getStatusesOnLocalStorage,
+  saveStatusesTasksOnLocalStorage,
+  getStatusesTasksOnLocalStorage
 })
 
 

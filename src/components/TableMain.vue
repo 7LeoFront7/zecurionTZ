@@ -1,21 +1,58 @@
 <script setup>
 import { inject } from 'vue'
-
+import "vue-select/dist/vue-select.css"
+import SelectTest from './SelectTest.vue'
 const allTasks = inject('allTasks')
+const statusTasks = inject('statusTasks')
+const statuses = inject('statuses')
+
+
 
 
 const { getTasksOnLocalStorage, saveAllTasksOnLocalStorage } = inject('LocalStorogeFunc')
 
 
+
 const props = defineProps({
+  tasks: Array,
   statuses: Array,
   dates: Array
 })
 
 
+
+
+
 function changeTask() {
   saveAllTasksOnLocalStorage()
 }
+
+
+function addNewStatusOnTask(task, dateTask) {
+
+
+  allTasks.value.map((fullTask) => {
+    fullTask.dates.map((dates, index) => {
+
+      if (task === fullTask.idTask) {
+
+        if (dates === dateTask.date)
+
+          fullTask.dates[index].statusDateTask = statuses.value[0].status
+        dates.isStatus = true
+
+        console.log(dates)
+      }
+    })
+  }
+  )
+
+  // console.log(allTasks.value)
+
+
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+}
+
 
 </script>
 
@@ -25,37 +62,27 @@ function changeTask() {
       <tr>
         <th class="w-56 border border-slate-600 p-3">Задачи</th>
 
-        <th v-for="DateItem of props.dates" class="w-56 border border-slate-600 p-3">
-          <span> {{ DateItem.date }}</span>
+        <th v-for="dateItem of props.dates" :key="dateItem.date" class="w-56 border border-slate-600 p-3">
+          <span> {{ dateItem.date }}</span>
         </th>
-
-
       </tr>
     </thead>
     <tbody>
-      <tr v-for='item of allTasks' :key="item.id">
+      <tr v-for='item, index of allTasks' :key="item.id">
         <td class="border border-slate-400 p-2">
           <input :id='item.id' v-model="item.task"
             class="outline-1 outline-offset-8 hover:bg-blue-100 transition outline-blue-600" type="text"
             @input="changeTask">
         </td>
-
-        <td v-for="dateItem of item.dates">
-
-          <div>
-
-            <span v-if="dateItem.status === null">Нет статусов</span>
-            <span v-if="dateItem.status !== null">
-              <button
-                class=' w-full bg-slate-200 p-3 text-center transition px-5 flex justify-center hover:bg-slate-300'>+</button>
-            </span>
-
-
-
-          </div>
+        <td class=" relative" v-for="dateItem of item.dates" :key="dateItem.idStatus">
+          <span v-if="statusTasks == false">Нет статусов</span>
+          <SelectTest v-else :addNewStatusOnTask='addNewStatusOnTask' :idItem='dateItem.idStatus' :date='dateItem.date'
+            :task='item.task' :statuses='dateItem.status' />
         </td>
 
       </tr>
     </tbody>
   </table>
 </template>
+
+     

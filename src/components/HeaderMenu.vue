@@ -6,6 +6,9 @@ import { inject, ref } from 'vue'
 
 const allTasks = inject('allTasks')
 
+const statusTasks = inject('statusTasks')
+
+
 const props = defineProps({
   tasks: Array,
   statuses: Array,
@@ -21,16 +24,14 @@ const formInputStatus = ref('')
 function postTask(e) { // Добавлание задачи
   e.preventDefault()
 
-
   const newTask = {
     task: formInputTask.value,
     idTask: uuidv4().slice(0, 6),
-    dates: props.dates,
-    status: null
+    dates: props.dates
   }
 
   allTasks.value.push(newTask)
-  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
 
@@ -41,21 +42,70 @@ function postTask(e) { // Добавлание задачи
 function postStatus(e) { // Добавлание статус
   e.preventDefault()
 
-
+  statusTasks.value = true
+  // localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
 
 
   const newStatus = {
     status: formInputStatus.value,
-    id: uuidv4().slice(0, 6)
+    idStatus: uuidv4().slice(0, 6)
   }
 
   props.statuses.push(newStatus)
-  localStorage.setItem('statuses', JSON.stringify(props.statuses))
 
 
+  allTasks.value.map((val) => {
+    val.dates.map((dates) => {
+      dates.status = props.statuses
+    })
+  })
+
+  props.dates.map((val) => {
+    val.status = props.statuses
+  })
+  // localStorage.setItem('dates', JSON.stringify(props.dates))
+  // localStorage.setItem('statuses', JSON.stringify(props.statuses))
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
   formInputStatus.value = ''
 
+}
+
+function postDate(e) { // Добавление даты
+  e.preventDefault() // Отключаем перезагрузку страницы
+
+
+  const newDate = { // Новая дата
+    date: formInputDate.value,
+    status: null,
+    idDate: uuidv4().slice(0, 6),
+    idStatus: uuidv4().slice(0, 6),
+    statusDateTask: null,
+    isStatus: false
+  }
+
+
+  props.dates.push(newDate)
+
+  allTasks.value.map((val) => {
+    val.dates = props.dates
+  })
+
+  props.dates.map((val) => {
+    val.status = props.statuses
+  })
+
+
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+  // localStorage.setItem('dates', JSON.stringify(props.dates))
+
+
+
+
+
+
+
+  formInputDate.value = ''
 }
 
 function deleteTask(e) { // удаление задачи
@@ -73,7 +123,7 @@ function deleteTask(e) { // удаление задачи
 
     if (isDeleteId >= 0) {
       allTasks.value.splice(isDeleteId, 1)
-      localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+      // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
     }
 
 
@@ -114,43 +164,70 @@ function deleteDate(e) { // удаление даты
 
 
 
-  localStorage.setItem('dates', JSON.stringify(props.dates))
-  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+  // localStorage.setItem('dates', JSON.stringify(props.dates))
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
 }
 
+function deleteStatus(e) { // удаление статуса
+  const id = e.target.id
+  let isDeleteStatus = ''
+  let isDeleteId = -1
 
-function postDate(e) { // Добавление даты
-  e.preventDefault() // Отключаем перезагрузку страницы
+  props.statuses.map((status, index) => {
 
+    if (status.idStatus == id) {
+      isDeleteStatus = status
+      isDeleteId = index
+    }
+  })
 
-
-  const newDate = { // Новая дата
-    date: formInputDate.value,
-    status: null,
-    idDate: uuidv4().slice(0, 6)
+  if (isDeleteId >= 0) {
+    props.statuses.splice(isDeleteId, 1)
   }
-
-  props.dates.push(newDate)
+  localStorage.setItem('statuses', JSON.stringify(props.statuses))
 
 
   allTasks.value.map((val) => {
-    val.dates = props.dates
+    val.dates.map((dates) => {
+
+      dates.status.map((stat, index) => {
+        if (stat.status === isDeleteStatus.status) {
+
+          dates.status.splice(index, 1)
+        }
+      })
+    })
   })
 
-
-  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
-  localStorage.setItem('dates', JSON.stringify(props.dates))
+  props.dates.map((val) => {
 
 
+    val.status.map((stat, index) => {
+      if (stat.status === isDeleteStatus.status) {
+
+        val.status.splice(index, 1)
+      }
+    })
+
+  })
+
+  if (props.statuses.length == 0) {
+    statusTasks.value = false
+    // localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
+  }
 
 
 
+  // localStorage.setItem('dates', JSON.stringify(props.dates))
+
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
-  formInputDate.value = ''
 }
+
+
 
 
 </script>
@@ -200,9 +277,24 @@ function postDate(e) { // Добавление даты
       </form>
       <ul class="max-w-md">
         <li v-for="item of props.statuses" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
-          <span class=" text-slate-400">id: {{ item.id }}</span>
+          <span class=" text-slate-400">id: {{ item.idStatus }}</span>
           <p>{{ item.status }}</p>
-          <button :id="item.id" @click="deleteStatus"
+          <button :id="item.idStatus" @click="deleteStatus"
+            class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+        </li>
+      </ul>
+
+    </div>
+    <div>
+      <ul v-for="item of allTasks" class="max-w-md">
+        <li v-for="itemTask of item.dates" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
+          <div class="flex justify-between gap-5">
+            <span class=" text-slate-400">id: {{ itemTask.idStatus }}</span>
+            <p>{{ item.task }}</p>
+            <b>{{ itemTask.date }}</b>
+            <b>{{ itemTask.statusDateTask }}</b>
+          </div>
+          <button :id="'fd'" @click="deleteStatus"
             class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
         </li>
       </ul>
