@@ -7,6 +7,7 @@ import { inject, ref } from 'vue'
 const allTasks = inject('allTasks')
 
 const statusTasks = inject('statusTasks')
+const statuses = inject('statuses')
 
 
 const props = defineProps({
@@ -51,8 +52,11 @@ function postStatus(e) { // Добавлание статус
     idStatus: uuidv4().slice(0, 6)
   }
 
-  props.statuses.push(newStatus)
+  statuses.value.push(newStatus)
 
+  props.dates.map((val) => {
+    val.status = props.statuses
+  })
 
   allTasks.value.map((val) => {
     val.dates.map((dates) => {
@@ -60,9 +64,7 @@ function postStatus(e) { // Добавлание статус
     })
   })
 
-  props.dates.map((val) => {
-    val.status = props.statuses
-  })
+
   // localStorage.setItem('dates', JSON.stringify(props.dates))
   // localStorage.setItem('statuses', JSON.stringify(props.statuses))
   // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
@@ -112,26 +114,23 @@ function deleteTask(e) { // удаление задачи
   const id = e.target.id
 
   let isDeleteId = -1
-  try {
 
-    allTasks.value.map((task, index) => {
-      if (task.idTask == id) {
-        isDeleteId = index
+  allTasks.value.map((task, index) => {
+    if (task.idTask == id) {
+      isDeleteId = index
 
-      }
-    })
-
-    if (isDeleteId >= 0) {
-      allTasks.value.splice(isDeleteId, 1)
-      // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
     }
+  })
 
-
-
-
-  } catch (err) {
-    console.log(err)
+  if (isDeleteId >= 0) {
+    allTasks.value.splice(isDeleteId, 1)
+    // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
   }
+
+
+  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+
+
 }
 
 function deleteDate(e) { // удаление даты
@@ -175,6 +174,8 @@ function deleteStatus(e) { // удаление статуса
   let isDeleteStatus = ''
   let isDeleteId = -1
 
+
+
   props.statuses.map((status, index) => {
 
     if (status.idStatus == id) {
@@ -186,7 +187,7 @@ function deleteStatus(e) { // удаление статуса
   if (isDeleteId >= 0) {
     props.statuses.splice(isDeleteId, 1)
   }
-  localStorage.setItem('statuses', JSON.stringify(props.statuses))
+
 
 
   allTasks.value.map((val) => {
@@ -213,15 +214,13 @@ function deleteStatus(e) { // удаление статуса
 
   })
 
-  if (props.statuses.length == 0) {
+  if (statuses.value.length == 0) {
     statusTasks.value = false
     // localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
   }
 
-
-
+  // localStorage.setItem('statuses', JSON.stringify(props.statuses))
   // localStorage.setItem('dates', JSON.stringify(props.dates))
-
   // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
@@ -287,7 +286,7 @@ function deleteStatus(e) { // удаление статуса
     </div>
     <div>
       <ul v-for="item of allTasks" class="max-w-md">
-        <li v-for="itemTask of item.dates" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
+        <li v-for="itemTask, index of item.dates" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
           <div class="flex justify-between gap-5">
             <span class=" text-slate-400">id: {{ itemTask.idStatus }}</span>
             <p>{{ item.task }}</p>

@@ -3,7 +3,7 @@ import { onMounted, provide, ref } from 'vue'
 import HeaderMenu from './components/HeaderMenu.vue'
 import TableMain from './components/TableMain.vue'
 
-const tasks = ref([])
+// const tasks = ref([])
 const dates = ref([])
 const statuses = ref([])
 const allTasks = ref([])
@@ -69,14 +69,24 @@ function getDatesOnLocalStorage() {
   }
 }
 
+function isStatuses() {
+  if (statuses.value.length == 0) {
+    statusTasks.value = false
+    localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
+  } else {
+    statusTasks.value = true
+    localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
+  }
+}
+
 onMounted(() => {
   getTasksOnLocalStorage()
   getDatesOnLocalStorage()
   getStatusesOnLocalStorage()
   getStatusesTasksOnLocalStorage()
+  isStatuses()
 })
 
-provide('tasks', tasks)
 provide('dates', dates)
 provide('statuses', statuses)
 provide('allTasks', allTasks)
@@ -99,7 +109,7 @@ provide('LocalStorogeFunc', {
 
 <template>
   <div class="wrapper w-11/12 mx-auto">
-    <HeaderMenu class="mb-8" :tasks='tasks' :dates='dates' :statuses='statuses' />
+    <HeaderMenu class="mb-8" :dates='dates' :statuses='statuses' />
     <TableMain :dates='dates' :statuses='statuses' />
   </div>
 </template>

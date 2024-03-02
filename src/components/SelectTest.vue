@@ -22,8 +22,26 @@ function chancge(e) {
 			}
 		})
 	})
-	// localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
+
 }
+
+// function selectActual() {
+// 	allTasks.value.map((taskItem) => {
+// 		taskItem.dates.map((dateItem) => {
+
+// 			dateItem.status.map((status) => {
+// 				console.log(status)
+// 				statusesForSelect.value.push(status.status)
+// 			})
+// 		})
+// 	})
+
+// 	console.log(statusesForSelect.value)
+// }
+
+// onMounted(() => {
+// 	selectActual()
+// })
 </script>
 
 <template>
