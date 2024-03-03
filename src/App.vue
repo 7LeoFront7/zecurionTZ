@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, provide, ref } from 'vue'
+import { provide, ref } from 'vue'
 import HeaderMenu from './components/HeaderMenu.vue'
 import TableMain from './components/TableMain.vue'
 
@@ -35,7 +35,6 @@ function getStatusesOnLocalStorage() {
     statuses.value = data
   }
 }
-
 
 function saveAllTasksOnLocalStorage() {
   localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
@@ -79,13 +78,13 @@ function isStatuses() {
   }
 }
 
-onMounted(() => {
-  getTasksOnLocalStorage()
-  getDatesOnLocalStorage()
-  getStatusesOnLocalStorage()
-  getStatusesTasksOnLocalStorage()
-  isStatuses()
-})
+// onMounted(() => {
+//   getTasksOnLocalStorage()
+//   getDatesOnLocalStorage()
+//   getStatusesOnLocalStorage()
+//   getStatusesTasksOnLocalStorage()
+//   isStatuses()
+// })
 
 provide('dates', dates)
 provide('statuses', statuses)
@@ -109,8 +108,14 @@ provide('LocalStorogeFunc', {
 
 <template>
   <div class="wrapper w-11/12 mx-auto">
-    <HeaderMenu class="mb-8" :dates='dates' :statuses='statuses' />
-    <TableMain :dates='dates' :statuses='statuses' />
+    <HeaderMenu class="mb-8" :statuses='statuses' />
+    <TableMain class="mb-8" :dates='dates' :statuses='statuses' />
   </div>
 </template>
 
+<style>
+html,
+body {
+  overflow-x: hidden;
+}
+</style>
