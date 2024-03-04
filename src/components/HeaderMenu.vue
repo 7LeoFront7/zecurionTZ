@@ -412,8 +412,8 @@ function deleteStatusOnAllTasks(task, dateItem) {
               <span class=" absolute -top-2 text-sm text-slate-400 bg-white px-2 pb-1">id: {{ item.idTask +
           [index].toString()
                 }}</span>
-              <p class=" max-w-24 mr-2">{{ item.task }}</p>
-              <b>{{ itemTask.date }}</b>
+              <p class="flex-1 mr-2">{{ item.task }}</p>
+              <b class="bg-white px-2 pb-1 absolute right-0 -top-3">{{ itemTask.date }}</b>
               <b>{{ itemTask.statusDateTask }}</b>
             </div>
             <button :id="item.idTask + [index].toString()" @click="deleteStatusOnAllTasks(item, itemTask.date)"
