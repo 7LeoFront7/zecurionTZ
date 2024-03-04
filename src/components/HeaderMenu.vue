@@ -1,14 +1,17 @@
 <script setup>
 
+import Swal from 'sweetalert2'
 import { v4 as uuidv4 } from 'uuid'
-import { inject, ref } from 'vue'
+import { inject, provide, ref } from 'vue'
 
-
+const GLOBAL_DATES = inject('GLOBAL_DATES')
 const allTasks = inject('allTasks')
 
 const statusTasks = inject('statusTasks')
 const statuses = inject('statuses')
 const dates = inject('dates')
+
+
 
 
 const props = defineProps({
@@ -25,23 +28,109 @@ const formInputStatus = ref('')
 function postTask(e) { // Добавлание задачи
   e.preventDefault()
 
-  const newTask = {
+  let close = false
+  if (formInputTask.value == undefined) { // Проверки на валидность
+    Swal.fire({
+      title: 'Произошла ошибка',
+      text: 'Вы ничего не внесли в форму с задачами',
+      icon: 'error',
+      confirmButtonText: 'Ок'
+    })
+    return
+  }
+  allTasks.value.map((task) => { // Проверки на валидность
+    if (task.task == formInputTask.value) {
+      Swal.fire({
+        title: 'Произошла ошибка',
+        text: 'Такая задача уже есть',
+        icon: 'error',
+        confirmButtonText: 'Ок'
+      })
+      close = true
+    }
+  })
+  if (close) { // Проверки на валидность
+    return
+  }
+
+
+
+
+
+  const newTask = { // Создание новой задачи
     task: formInputTask.value,
     idTask: uuidv4().slice(0, 6),
-    dates: dates.value
+    dates: GLOBAL_DATES.value
   }
 
   allTasks.value.push(newTask)
-  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
 
 
+  // const IndexLastTask = allTasks.value.length - 1
+
+  // allTasks.value[IndexLastTask]?.dates.map((date) => {
+  //   date.statusDateTask = null
+  //   date.isStatus = false
+  // })
 
   formInputTask.value = ''
-
 }
 
 function postStatus(e) { // Добавлание статус
   e.preventDefault()
+
+  if (formInputStatus.value == '') {
+    Swal.fire({
+      title: 'Произошла ошибка',
+      text: 'Вы ничего не внесли в форму со статусами',
+      icon: 'error',
+      confirmButtonText: 'Ок'
+    })
+    return
+  } else if (allTasks.value.length == 0) {
+    Swal.fire({
+      title: 'Произошла ошибка',
+      text: 'Чтобы добавить статус задачи, сначала задайте задачу',
+      icon: 'error',
+      confirmButtonText: 'Хорошо!'
+    })
+    return
+  } else if (allTasks.value[0]?.dates.length == 0) {
+    Swal.fire({
+      title: 'Произошла ошибка',
+      text: 'Чтобы добавить статус задачи, задайте дату',
+      icon: 'error',
+      confirmButtonText: 'Хорошо!'
+    })
+    return
+  }
+
+  let close = false
+
+  allTasks.value.map((task) => { // Проверки на валидность
+
+    task.dates.map((date) => {
+
+      date.status.map((status) => {
+
+        if (status.status == formInputStatus.value) {
+          Swal.fire({
+            title: 'Произошла ошибка',
+            text: 'Такой статус уже есть',
+            icon: 'error',
+            confirmButtonText: 'Ок'
+          })
+          close = true
+
+        }
+      })
+    })
+
+  })
+  if (close) { // Проверки на валидность
+    formInputStatus.value = ''
+    return
+  }
 
   statusTasks.value = true
   // localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
@@ -65,10 +154,6 @@ function postStatus(e) { // Добавлание статус
   })
 
 
-  // localStorage.setItem('dates', JSON.stringify(dates.value))
-  // localStorage.setItem('statuses', JSON.stringify(props.statuses))
-  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
-
   formInputStatus.value = ''
 
 }
@@ -76,6 +161,42 @@ function postStatus(e) { // Добавлание статус
 function postDate(e) { // Добавление даты
   e.preventDefault() // Отключаем перезагрузку страницы
 
+  if (formInputDate.value == '') {
+    Swal.fire({
+      title: 'Произошла ошибка',
+      text: 'Вы ничего не внесли в форму с датами',
+      icon: 'error',
+      confirmButtonText: 'Ок'
+    })
+    return
+  } else if (allTasks.value.length == 0) {
+    Swal.fire({
+      title: 'Произошла ошибка',
+      text: 'Чтобы добавить дату задачи, сначала задайте задачу',
+      icon: 'error',
+      confirmButtonText: 'Хорошо!'
+    })
+    return
+  }
+
+  let close = false
+  allTasks.value.map((task) => { // Проверки на валидность
+    task.dates.map((date) => {
+      if (date.date == formInputDate.value) {
+        Swal.fire({
+          title: 'Произошла ошибка',
+          text: 'Такая дата уже есть',
+          icon: 'error',
+          confirmButtonText: 'Ок'
+        })
+        close = true
+      }
+    })
+
+  })
+  if (close) { // Проверки на валидность
+    return
+  }
 
   const newDate = { // Новая дата
     date: formInputDate.value,
@@ -86,23 +207,19 @@ function postDate(e) { // Добавление даты
     isStatus: false
   }
 
-  formInputDate.value = ''
+  // GLOBAL_DATES.value.push(newDate)
+  // allTasks.value.map((task) => {
+  //   task.dates = GLOBAL_DATES.value
+  // })
 
-  allTasks.value.map((task, index) => {
+  GLOBAL_DATES.value = [...GLOBAL_DATES.value, newDate]
+
+  allTasks.value.forEach((task) => {
+    task.dates = [...task.dates, newDate]
     // task.status = task.status ? task.status.push(newDate) : []
-    console.log(task)
-    task.dates = dates.value
   })
 
-  dates.value.push(newDate)
-
-
-
-
-
-
-
-  console.log(allTasks.value)
+  formInputDate.value = ''
 }
 
 function deleteTask(e) { // удаление задачи
@@ -134,27 +251,31 @@ function deleteDate(e) { // удаление даты
   let isDeleteId = -1
 
 
-  dates.value.map((date, index) => {
+  allTasks.value.map((task) => {
 
-    if (date.idDate == id) {
-      isDeleteDate = date
-      isDeleteId = index
+    task.dates.map((date, index) => {
+      if (date.idDate == id) {
+        isDeleteDate = date
+        isDeleteId = index
+      }
+
+    })
+
+    if (isDeleteId >= 0) {
+      task.dates.splice(isDeleteId, 1)
     }
   })
 
-  if (isDeleteId >= 0) {
-    dates.value.splice(isDeleteId, 1)
-  }
 
 
 
-  allTasks.value.map((val) => {
-    val.dates.map((itemObj, index) => {
-      if (itemObj.date === isDeleteDate.date) {
-        val.dates.splice(index, 1)
-      }
-    })
-  })
+  // allTasks.value.map((val) => {
+  //   val.dates.map((itemObj, index) => {
+  //     if (itemObj.date === isDeleteDate.date) {
+  //       val.dates.splice(index, 1)
+  //     }
+  //   })
+  // })
 
 
 
@@ -187,7 +308,7 @@ function deleteStatus(e) { // удаление статуса
 
   allTasks.value.map((val) => {
     val.dates.map((dates) => {
-
+      dates.isStatus = false
       dates.status.map((stat, index) => {
         if (stat.status === isDeleteStatus.status) {
 
@@ -211,14 +332,9 @@ function deleteStatus(e) { // удаление статуса
 
   if (statuses.value.length == 0) {
     statusTasks.value = false
-    // localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
   }
 
-  // localStorage.setItem('statuses', JSON.stringify(props.statuses))
-  // localStorage.setItem('dates', JSON.stringify(dates.value))
-  // localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
-
-
+  console.log(allTasks.value)
 }
 
 function deleteStatusOnAllTasks(task, dateItem) {
@@ -237,7 +353,7 @@ function deleteStatusOnAllTasks(task, dateItem) {
   <header class="grid 2xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 mt-6">
     <div>
       <form action="#" class=' border border-black flex justify-between'>
-        <input v-model='formInputTask' class="p-2 flex-1 outline-none" type="text" placeholder="task">
+        <input v-model='formInputTask' class="p-2 flex-1 outline-none" type="text" placeholder="Введите задачу ...">
         <button @click="postTask" class=" bg-blue-950 text-white px-5 transition hover:bg-blue-800">Добавить</button>
 
       </form>
@@ -252,18 +368,20 @@ function deleteStatusOnAllTasks(task, dateItem) {
     </div>
     <div>
       <form action="#" class=' border border-black flex justify-between'>
-        <input v-model='formInputDate' class="p-2 flex-1 outline-none" type="text" placeholder="date">
+        <input v-model='formInputDate' class="p-2 flex-1 outline-none" type="text" placeholder="Введите дату ...">
         <button @click="postDate" class=" bg-blue-950 text-white px-5 transition hover:bg-blue-800">Добавить</button>
 
       </form>
-      <ul v-auto-animate class="w-full">
+      <ul v-if='allTasks != []' v-auto-animate class="w-full">
 
-        <li v-for="item in dates" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
+        <li v-for="item in allTasks[0]?.dates" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
           <span class=" text-slate-400">id: {{ item.idDate }}</span>
           <p>{{ item.date }}</p>
           <button :id="item.idDate" @click="deleteDate"
             class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
+
         </li>
+
 
 
 
@@ -271,7 +389,7 @@ function deleteStatusOnAllTasks(task, dateItem) {
     </div>
     <div>
       <form action="#" class=' border border-black flex justify-between'>
-        <input v-model='formInputStatus' class="p-2 flex-1 outline-none" type="text" placeholder="status">
+        <input v-model='formInputStatus' class="p-2 flex-1 outline-none" type="text" placeholder="Введите статус ...">
         <button @click="postStatus" class=" bg-blue-950 text-white px-5 transition hover:bg-blue-800">Добавить</button>
 
       </form>
@@ -286,9 +404,9 @@ function deleteStatusOnAllTasks(task, dateItem) {
 
     </div>
     <div>
-      <ul v-for="item of allTasks" class="w-full">
-        <div v-for="itemTask, index of item.dates">
-          <li v-if="itemTask.isStatus === true"
+      <ul v-auto-animate v-for="item of allTasks" class="w-full">
+        <li class='mb-5' v-for="itemTask, index of item.dates">
+          <div v-if="itemTask.isStatus === true"
             class="flex relative justify-between items-center border gap-6 p-4 my-2 mt-0">
             <div class="flex justify-between gap-2">
               <span class=" absolute -top-2 text-sm text-slate-400 bg-white px-2 pb-1">id: {{ item.idTask +
@@ -300,8 +418,8 @@ function deleteStatusOnAllTasks(task, dateItem) {
             </div>
             <button :id="item.idTask + [index].toString()" @click="deleteStatusOnAllTasks(item, itemTask.date)"
               class="bg-rose-600 p-2 text-white rounded-md px-4 transition hover:bg-rose-800">Удалить</button>
-          </li>
-        </div>
+          </div>
+        </li>
 
       </ul>
     </div>

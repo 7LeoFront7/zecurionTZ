@@ -8,7 +8,7 @@ const allTasks = inject('allTasks')
 
 
 
-const { getTasksOnLocalStorage, saveAllTasksOnLocalStorage } = inject('LocalStorogeFunc')
+
 
 
 
@@ -20,11 +20,6 @@ const props = defineProps({
 
 
 
-
-
-function changeTask() {
-  saveAllTasksOnLocalStorage()
-}
 
 
 
@@ -42,7 +37,7 @@ function changeTask() {
         <tr>
           <th class="w-56 border border-slate-600 p-3">Задачи</th>
 
-          <th v-for="dateItem of props.dates" :key="dateItem.date" class="w-56 border border-slate-600 p-3">
+          <th v-for="dateItem of allTasks[0]?.dates" :key="dateItem.date" class="w-56 border border-slate-600 p-3">
             <span> {{ dateItem.date }}</span>
           </th>
         </tr>

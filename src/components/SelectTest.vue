@@ -2,6 +2,7 @@
 import { inject, ref } from 'vue'
 const statuses = inject('statuses')
 const allTasks = inject('allTasks')
+const GLOBAL_dates = inject('dates')
 
 const props = defineProps({
 	date: String,
@@ -13,8 +14,9 @@ const selected = ref(statuses.value[0].status)
 function chancge(e) {
 	const nowStatus = e.target.value
 
-	allTasks.value.map((el, index) => {
+	allTasks.value.map((el, indexTask) => {
 		el.dates.map((dates, index) => {
+			// dates.status[index].status = statuses.value[0].status
 			if (dates.date === props.date) {
 				if (props.task === el.task) {
 					dates.statusDateTask = nowStatus

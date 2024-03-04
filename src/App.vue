@@ -9,98 +9,16 @@ const statuses = ref([])
 const allTasks = ref([])
 const statusTasks = ref(false)
 
+const GLOBAL_DATES = ref([])
 
 
-
-function saveStatusesTasksOnLocalStorage() {
-  localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
-}
-
-function getStatusesTasksOnLocalStorage() {
-  const data = JSON.parse(localStorage.getItem('statusTasks'))
-
-  statusTasks.value = data
-}
-
-function saveStatusesOnLocalStorage() {
-  localStorage.setItem('statuses', JSON.stringify(statuses.value))
-}
-
-function getStatusesOnLocalStorage() {
-  const data = JSON.parse(localStorage.getItem('statuses'))
-
-  if (data == []) {
-    statuses.value = []
-  } else {
-    statuses.value = data
-  }
-}
-
-function saveAllTasksOnLocalStorage() {
-  localStorage.setItem('allTasks', JSON.stringify(allTasks.value))
-}
-
-function getTasksOnLocalStorage() {
-  const data = JSON.parse(localStorage.getItem('allTasks'))
-
-  if (data == []) {
-    allTasks.value = []
-  } else {
-    allTasks.value = data
-  }
-}
-
-function saveDatesOnLocalStorage() {
-  localStorage.setItem('dates', JSON.stringify(dates.value))
-}
-// saveStatusesOnLocalStorage()
-// saveAllTasksOnLocalStorage()
-// saveDatesOnLocalStorage()
-
-
-function getDatesOnLocalStorage() {
-  const data = JSON.parse(localStorage.getItem('dates'))
-
-  if (data == []) {
-    return dates.value = []
-  } else {
-    return dates.value = data
-  }
-}
-
-function isStatuses() {
-  if (statuses.value.length == 0) {
-    statusTasks.value = false
-    localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
-  } else {
-    statusTasks.value = true
-    localStorage.setItem('statusTasks', JSON.stringify(statusTasks.value))
-  }
-}
-
-// onMounted(() => {
-//   getTasksOnLocalStorage()
-//   getDatesOnLocalStorage()
-//   getStatusesOnLocalStorage()
-//   getStatusesTasksOnLocalStorage()
-//   isStatuses()
-// })
 
 provide('dates', dates)
 provide('statuses', statuses)
 provide('allTasks', allTasks)
 provide('statusTasks', statusTasks)
 
-provide('LocalStorogeFunc', {
-  getTasksOnLocalStorage,
-  saveAllTasksOnLocalStorage,
-  saveDatesOnLocalStorage,
-  getDatesOnLocalStorage,
-  saveStatusesOnLocalStorage,
-  getStatusesOnLocalStorage,
-  saveStatusesTasksOnLocalStorage,
-  getStatusesTasksOnLocalStorage
-})
+provide('GLOBAL_DATES', GLOBAL_DATES)
 
 
 
@@ -114,8 +32,11 @@ provide('LocalStorogeFunc', {
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 html,
 body {
+  font-family: "Poppins", sans-serif;
   overflow-x: hidden;
 }
 </style>

@@ -4,7 +4,8 @@ import SelectTest from './SelectTest.vue'
 const statuses = inject('statuses')
 const allTasks = inject('allTasks')
 const statusTasks = inject('statusTasks')
-const dates = inject('dates')
+const GLOBAL_DATES = inject('GLOBAL_DATES')
+
 
 
 const props = defineProps({
@@ -33,18 +34,6 @@ function addNewStatusOnTask(task, dateTask) {
 
 
 	allTasks.value[currentIndex] = currentValue
-
-
-	// .map((dates, index) => {
-	// 	debugger
-
-	// 	if (dates.date === dateTask) {
-	// 		console.log(allTasks.value, currentIndex)
-
-	// 		allTasks.value[currentIndex].dates[index].statusDateTask = statuses.value[0].status
-	// 		allTasks.value[currentIndex].dates[index].isStatus = true
-	// 	}
-	// })
 
 }
 
