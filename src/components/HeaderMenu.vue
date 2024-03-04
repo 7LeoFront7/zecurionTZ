@@ -353,9 +353,8 @@ function deleteStatusOnAllTasks(task, dateItem) {
   <header class="grid 2xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 mt-6">
     <div>
       <form action="#" class=' border border-black flex justify-between'>
-        <input v-model='formInputTask' class="p-2 flex-1 outline-none" type="text" placeholder="Введите задачу ...">
+        <input v-model='formInputTask' class="p-2 w-full outline-none" type="text" placeholder="Введите задачу ...">
         <button @click="postTask" class=" bg-blue-950 text-white px-5 transition hover:bg-blue-800">Добавить</button>
-
       </form>
       <ul v-auto-animate class="w-full">
         <li v-for="item of allTasks" class="flex justify-between items-center border gap-6 p-4 my-2 mt-0">
@@ -368,7 +367,8 @@ function deleteStatusOnAllTasks(task, dateItem) {
     </div>
     <div>
       <form action="#" class=' border border-black flex justify-between'>
-        <input v-model='formInputDate' class="p-2 flex-1 outline-none" type="text" placeholder="Введите дату ...">
+        <input v-model='formInputDate' class="p-2 flex-1 w-full outline-none" type="text"
+          placeholder="Введите дату ...">
         <button @click="postDate" class=" bg-blue-950 text-white px-5 transition hover:bg-blue-800">Добавить</button>
 
       </form>
@@ -389,7 +389,8 @@ function deleteStatusOnAllTasks(task, dateItem) {
     </div>
     <div>
       <form action="#" class=' border border-black flex justify-between'>
-        <input v-model='formInputStatus' class="p-2 flex-1 outline-none" type="text" placeholder="Введите статус ...">
+        <input v-model='formInputStatus' class="p-2 flex-1 w-full outline-none" type="text"
+          placeholder="Введите статус ...">
         <button @click="postStatus" class=" bg-blue-950 text-white px-5 transition hover:bg-blue-800">Добавить</button>
 
       </form>
