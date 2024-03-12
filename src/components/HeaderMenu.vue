@@ -2,7 +2,7 @@
 
 import Swal from 'sweetalert2'
 import { v4 as uuidv4 } from 'uuid'
-import { inject, provide, ref } from 'vue'
+import { inject, ref } from 'vue'
 
 const GLOBAL_DATES = inject('GLOBAL_DATES')
 const allTasks = inject('allTasks')
@@ -308,10 +308,14 @@ function deleteStatus(e) { // удаление статуса
 
   allTasks.value.map((val) => {
     val.dates.map((dates) => {
-      dates.isStatus = false
+
+      if (dates.statusDateTask === isDeleteStatus.status) {
+        dates.isStatus = false
+        dates.statusDateTask = null
+      }
+
       dates.status.map((stat, index) => {
         if (stat.status === isDeleteStatus.status) {
-
           dates.status.splice(index, 1)
         }
       })
@@ -319,11 +323,8 @@ function deleteStatus(e) { // удаление статуса
   })
 
   dates.value.map((val) => {
-
-
     val.status.map((stat, index) => {
       if (stat.status === isDeleteStatus.status) {
-
         val.status.splice(index, 1)
       }
     })
@@ -334,7 +335,6 @@ function deleteStatus(e) { // удаление статуса
     statusTasks.value = false
   }
 
-  console.log(allTasks.value)
 }
 
 function deleteStatusOnAllTasks(task, dateItem) {
